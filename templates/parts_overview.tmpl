@@ -1,0 +1,128 @@
+{{ template "header" . }}
+
+<div class="container">
+	<div class="block">
+		<a class="button">
+			<span class="icon is-small">
+				<i class="fa fa-plus"></i>
+			</span>
+			<span> Create project </span>
+		</a>
+	</div>
+	<div id="project-dashboard">
+		{{range $index, $project := .projects}}
+		<section class="section">
+			<div class="card">
+				<a href="/project/{{.Prefix}}/{{$project.Year}}">
+					<header class="card-header">
+						<p class="title is-5 card-header-title">
+							{{$project.Name}}
+						</p>
+					</header>
+				</a>
+				
+				<div class="card-content">
+					<nav class="level">
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=design">
+								<div>
+									<p class="heading has-text-success">Design</p>
+									<p class="title">{{$.design}}</p>
+								</div>
+							</a>
+						</div>	
+
+						
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=manufacturing">
+								<div>
+									<p class="heading has-text-info">Manufacturing</p>
+									<p class="title">{{$.manufacturing}}</p>
+								</div>
+							</a>
+						</div>
+					</nav>
+				</div>
+				<div class="card-content">
+					<nav class="level">
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=in_concepts">
+								<div>
+									<p class="heading has-text-success">In concepts</p>
+									<p class="title">{{index (index $.stats $index) 0}}</p>
+								</div>
+							</a>
+						</div>
+
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=in_design">
+								<div>
+									<p class="heading has-text-success">In design</p>
+									<p class="title">{{index (index $.stats $index) 1}}</p>
+								</div>
+							</a>
+						</div>
+
+
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=drawings_needed">
+								<div>
+									<p class="heading has-text-success">Drawings needed</p>
+									<p class="title">{{index (index $.stats $index) 2}}</p>
+								</div>
+							</a>
+						</div>
+
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=cut">
+								<div>
+									<p class="heading has-text-danger">Ready to cut</p>
+									<p class="title">{{index (index $.stats $index) 5}}</p>
+								</div>
+							</a>
+						</div>
+
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=mill">
+								<div>
+									<p class="heading has-text-info">Mill parts</p>
+									<p class="title">{{index (index $.stats $index) 6}}</p>
+								</div>
+							</a>
+						</div>
+
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=lathe">
+								<div>
+									<p class="heading has-text-info">Lathe parts</p>
+									<p class="title">{{index (index $.stats $index) 7}}</p>
+								</div>
+							</a>
+						</div>
+
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=post">
+								<div>
+									<p class="heading has-text-info">Ready for post</p>
+									<p class="title">{{index (index $.stats $index) 8}}</p>
+								</div>
+							</a>
+						</div>
+
+						<div class="level-item has-text-centered">
+							<a href="/project/{{.Prefix}}/{{$project.Year}}?filter-by=router_needed">
+								<div>
+									<p class="heading has-text-info">Ready for router</p>
+									<p class="title">{{$.router}}</p>
+								</div>
+							</a>
+						</div>
+					</nav>
+				</div>
+			</div>
+		</section>
+		{{end}}
+	</div>
+</div>
+
+{{ template "footer" . }}

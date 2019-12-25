@@ -1,0 +1,5 @@
+.has-content-vertically-aligned {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

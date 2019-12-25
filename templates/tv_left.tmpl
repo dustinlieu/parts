@@ -1,0 +1,61 @@
+{{ template "header" . }}
+
+<div class="columns">
+	<div class="column is-6">
+		<table class="table table is-fullwidth is-striped">
+			<tbody>
+				{{range $.assemblies}}
+					<tr>
+						<th>{{$.prefix}}-{{.PartNumber}}</th>
+						<td>{{.Name}}</td>
+					</tr>
+				{{end}}
+			</tbody>
+		</table>
+	</div>
+	<!--
+	<div class="column is-6">
+		{{range $.items}}
+
+		<div class="card">
+			<header class="card-header">
+				<p class="card-header-title">
+					{{.PartNumber}}
+				</p>
+				<p class="card-header-icon">
+					{{.Name}}
+				</a>
+			</header>
+			<div class="card-content">
+				<nav class="level">
+					<div class="level-item has-text-centered">
+						<div>
+							<p class="heading">Design</p>
+							<p class="title has-text-danger">{{.DesignCount}}</p>
+						</div>
+					</div>
+
+					<div class="level-item has-text-centered">
+						<div>
+							<p class="heading">Manufacturing</p>
+							<p class="title has-text-success">{{.ManufacturingCount}}</p>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+
+		<hr>
+
+		{{end}}
+	</div>
+	-->
+</div>
+
+<script>
+	setInterval(window.location.reload.bind(window.location), 1000)
+
+
+</script>
+
+{{ template "footer" . }}

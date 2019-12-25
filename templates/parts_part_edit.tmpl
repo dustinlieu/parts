@@ -1,0 +1,125 @@
+{{ template "header" . }}
+
+<div class="container">
+	<div class="columns">
+		<div class="column is-one-third">
+			<form method="post">
+				<div class="field">
+					<label class="label">Part Number</label>
+					<div class="control">
+						<input class="input" type="text" value="{{.part.PartNumber}}" name="part_number">
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Description</label>
+					<div class="control">
+						<input class="input" type="text" value="{{.part.Name}}"  name="part_name">
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Parent</label>
+					<div class="control">
+						<span class="select">
+							<select name="parent">
+								<option value="-1"></option>
+								{{range .assemblies}}
+								<option value="{{.ID}}" {{if eq $.part.Parent .ID}}selected{{end}}>{{.PartNumber}} - {{.Name}}</option>
+								{{end}}
+							</select>
+						</span>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Status</label>
+					<div class="control">
+						<span class="select">
+							<select name="status">
+								{{range $key, $value := .statusMap}}
+								<option value={{$key}} {{if eq $key $.part.Status}}selected{{end}}>
+									{{$value}}
+								</option>
+								{{end}}
+							</select>
+						</span>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Material</label>
+					<div class="control">
+						<span class="select">
+							<select name="material">
+								{{range $key, $value := .materialMap}}
+								<option value={{$key}} {{if eq $.part.Material $key}}selected{{end}}>{{$value}}</option>
+								{{end}}
+							</select>
+						</span>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Have material?</label>
+					<div class="control">
+						<label class="checkbox">
+							<input type="checkbox" {{if .part.HaveMaterial}}checked{{end}} name="have_material">
+							Have material
+						</label>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Material Cut Length</label>
+					<div class="control">
+						<input class="input" type="text" value="{{.part.MaterialCutLength}}" name="material_cut_length">
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Quantity</label>
+					<div class="control">
+						<input class="input" type="text" value="{{.part.Quantity}}" name="quantity">
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Needs router?</label>
+					<div class="control">
+						<label class="checkbox">
+							<input type="checkbox" {{if .part.NeedsRouter}}checked{{end}} name="needs_router">
+							Needs router
+						</label>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Priority</label>
+					<div class="control">
+						<label class="radio">
+							<input type="radio" name="priority" value="0" {{if eq .part.Priority 0}}checked{{end}}>
+							Low
+						</label>
+						<label class="radio">
+							<input type="radio" name="priority" value="1" {{if eq .part.Priority 1}}checked{{end}}>
+							Medium
+						</label>
+						<label class="radio">
+							<input type="radio" name="priority" value="2" {{if eq .part.Priority 2}}checked{{end}}>
+							High
+						</label>
+					</div>
+				</div>
+
+				<div class="field">
+					<div class="control">
+						<input class="button is-primary" type="submit" value="Submit">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{{ template "footer" . }}

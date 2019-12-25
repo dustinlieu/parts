@@ -1,0 +1,54 @@
+<html>
+  
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>SegmentDisplay</title>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+
+    <script type="text/javascript" src="/assets/scripts/segment-display.js"></script>
+    <script type="text/javascript">
+
+      var display = new SegmentDisplay("display");
+      display.pattern         = "##:##:##:##";
+      display.cornerType      = 1;
+      display.displayType     = 7;
+      display.displayAngle    = 7.5;
+      display.digitHeight     = 20;
+      display.digitWidth      = 14;
+      display.digitDistance   = 2.5;
+      display.segmentWidth    = 2.1;
+      display.segmentDistance = 0.4;
+      display.colorOn         = "rgba(0, 220, 0, 1)";
+      display.colorOff        = "rgba(0, 150, 0, 0.2)";
+
+      animate();
+
+      function animate() {
+        var end = new Date('Tue Feb 20 23:59:00 EST 2018');
+        var duration = end - Date.now()
+
+        var days    = Math.floor(duration / (1000 * 60 * 60 * 24));
+        var hours   = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((duration % (1000 * 60)) / 1000);
+        var value   = ((days < 10) ? '0' + days : days) + ':' + ((hours < 10) ? '0' + hours : hours) + ':' + ((minutes < 10) ? '0' + minutes : minutes) + ':' + ((seconds < 10) ? '0' + seconds : seconds)
+        display.setValue(value);
+
+        window.setTimeout('animate()', 100);
+      }
+
+    </script>
+  </head>
+  
+  <body style="background-color:#000000;">
+    <div style="padding: 0px 0px">
+      <div style="width: 1920px; height: 1080px; position: relative;">
+        <div style="position: absolute; left: 460px; top: 290px; width: 1000px; height: 500px">
+          <canvas id="display" width="1000" height="500"></canvas>
+        </div>
+      </div>
+    </div>
+  </body>
+  
+</html>

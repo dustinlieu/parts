@@ -1,0 +1,31 @@
+{{ template "header" . }}
+
+<div class="container">
+	<div class="columns">
+		<div class="column is-one-third">
+			<form method="post">
+				<label class="label">Prefix</label>
+				<p class="control">
+					<input class="input" type="text" name="project_prefix">
+				</p>
+
+				<label class="label">Year</label>
+                <p class="control">
+                    <input class="input" type="text" name="project_year">
+                </p>
+
+				<label class="label">Name</label>
+				<p class="control">
+					<input class="input" type="text" name="project_name">
+				</p>
+
+				<div class="control is-grouped">
+					<p class="control">
+						<input class="button is-primary" type="submit" value="Create">
+					</p>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{{ template "footer" . }}

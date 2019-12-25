@@ -1,0 +1,69 @@
+{{ define "header" }}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Parts - {{ .title }}</title>
+
+		<link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+		<link rel="stylesheet" href="/assets/style.css">
+		<link rel="stylesheet" href="/assets/stylesheets/vendor/bulma.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="/assets/scripts/script.js"></script>
+	</head>
+	<body>
+		{{if not $.hideHeader}}
+		<section class="hero is-danger">
+			<div class="hero-head">
+				<nav class="navbar">
+					<div class="container">
+						<div class="navbar-brand">
+							<span class="navbar-item">
+								<img src="/assets/images/2015Logo.png" height="28">
+							</span>
+						</div>
+
+						<div class="navbar-menu">
+							{{if not .hideNav}}
+							<div class="navbar-start">
+								<a class="navbar-item" href="/">
+									Overview
+								</a>
+							</div>
+
+							<div class="navbar-end">
+								<a class="navbar-item" href="/logout">
+									Logout
+								</a>
+							</div>
+							{{end}}
+						</div>
+					</div>
+				</nav>
+			</div>
+
+			<div class="hero-body">
+				<div class="container">
+					<h1 class="title">
+						{{.title}}
+					</h1>
+					<h2 class="subtitle">
+						{{.subtitle}}
+					</h2>
+				</div>
+			</div>
+		</section>
+		{{else}}
+		<nav class="navbar is-primary is-danger">
+			<div class="navbar-brand">
+				<span class="navbar-item">
+					<img src="/assets/images/2015Logo.png" height="28">
+				</span>
+			</div>
+        </nav>
+		{{end}}
+		<section class="section">
+{{ end }}

@@ -1,0 +1,137 @@
+{{ template "header" . }}
+
+<div class="container">
+	<nav class="level">
+		<div class="level-left">
+			<div class="level-item">
+				<div class="title is-5">
+					<a href="/project/{{$.project.Prefix}}/{{$.project.Year}}">
+					{{$.project.Name}}
+					</a>
+					<b>&gt;</b>
+					{{range $.parents}}
+					<a href="/project/{{$.project.Prefix}}/{{$.project.Year}}/assembly/{{.PartNumber}}">
+					{{.PartNumber}}
+					</a>
+					<b>&gt;</b>
+					{{end}}
+					{{$.assembly.PartNumber}}
+				</div>
+			</div>
+		</div>
+
+		<div class="level-right">
+			<div class="level-item">
+				<div class="buttons has-addons is-pulled-right">
+					<a class="button" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/new-part">
+						<span class="icon is-small">
+							<i class="fa fa-plus"></i>
+						</span>
+						<span>New Part</span>
+					</a>
+					<a class="button" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/new-assembly">
+						<span class="icon is-small">
+							<i class="fa fa-plus"></i>
+						</span>
+						<span>New Assembly</span>
+					</a>
+					<a class="button" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/assembly/{{$.assembly.PartNumber}}/edit">
+						<span class="icon is-small">
+							<i class="fa fa-edit"></i>
+						</span>
+						<span>Edit Assembly</span>
+					</a>
+					<a class="button" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/assembly/{{$.assembly.PartNumber}}/delete">
+						<span class="icon is-small">
+							<i class="fa fa-trash"></i>
+						</span>
+						<span>Delete Assembly</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="columns">
+		<div class="column is-one-quarter">
+			<table class="table is-fullwidth is-striped is-bordered">
+				<tbody>
+					<tr>
+						<td>
+							<b>Project</b>
+						</td>
+						<td>{{$.project.Name}}</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Part Number</b>
+						</td>
+						<td>{{$.project.Prefix}}-{{$.project.Year}}-{{$.assembly.PartNumber}}</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Quantity</b>
+						</td>
+						<td>{{$.assembly.Quantity}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="column">
+			<table class="table is-fullwidth is-striped is-bordered">
+				<thead>
+					<tr>
+						<th>Part Number</th>
+						<th>Type</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{range .items}}
+					<tr>
+						<th>
+							{{if eq .Type "Assembly"}}
+							<a href="/project/{{$.project.Prefix}}/{{$.project.Year}}/assembly/{{.PartNumber}}">
+							{{else}}
+							<a href="/project/{{$.project.Prefix}}/{{$.project.Year}}/part/{{.PartNumber}}">
+							{{end}}
+								{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+
+							</a>
+						</th>
+						<td>{{.Type}}</td>
+						<td>{{.Name}}</td>
+						<td>{{index $.statusMap .Status}}</td>
+						<td>
+							<div class="buttons has-addons">
+								{{if eq .Type "Assembly"}}
+								<a class="button is-small" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/assembly/{{.PartNumber}}/edit">
+								{{else}}
+								<a class="button is-small" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/part/{{.PartNumber}}/edit">
+								{{end}}
+									<span class="icon is-small">
+										<i class="fa fa-edit"></i>
+									</span>
+								</a>
+								{{if eq .Type "Assembly"}}
+								<a class="button is-small" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/assembly/{{.PartNumber}}/delete">
+								{{else}}
+								<a class="button is-small" href="/project/{{$.project.Prefix}}/{{$.project.Year}}/part/{{.PartNumber}}/delete">
+								{{end}}
+									<span class="icon is-small">
+										<i class="fa fa-trash"></i>
+									</span>
+								</a>
+							</div>
+						</td>
+					</tr>
+					{{end}}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{{ template "footer" . }}

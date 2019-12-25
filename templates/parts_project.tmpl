@@ -1,0 +1,480 @@
+{{ template "header" . }}
+
+<div class="container">
+	<div class="columns">
+		{{if ne $.filterOption "none"}}
+		<div class="column">
+			<h5 class="title is-5">
+				<a class="delete" href="/project/{{.project.Prefix}}/{{.project.Year}}"></a>
+				<b>Filtered by:</b> {{index $.filterMap $.filterOption}}
+			</h5>
+		</div>
+		<div class="column">
+            <h5 class="title is-6 is-pulled-right">
+                {{len .items}}
+                {{if eq (len .items) 1}}
+                Item Found
+                {{else}}
+                Items Found
+                {{end}}
+            </h5>
+        </div>
+		{{end}}
+
+		{{if eq $.filterOption "none"}}
+		<div class="column">
+			<p class="buttons has-addons is-pulled-right">
+				<a class="button" href="new-part">
+					<span class="icon is-small">
+						<i class="fa fa-plus"></i>
+					</span>
+					<span>New Part</span>
+				</a>
+				<a class="button" href="new-assembly">
+					<span class="icon is-small">
+						<i class="fa fa-plus"></i>
+					</span>
+					<span>New Assembly</span>
+				</a>
+			</p>
+		</div>
+		{{end}}
+	</div>
+
+	{{if eq $.filterOption "cut"}}
+	<table class="table is-fullwidth is-striped">
+		<thead>
+			<tr>
+				<th>Part Number</th>
+				<th>Type</th>
+				<th>Description</th>
+				<th>Material</th>
+				<th>Cut Length</th>
+				<th>Quantity</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .items}}
+			<tr>
+				<th>
+					{{if eq .Type "Assembly"}}
+					<a href="assembly/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{else}}
+					<a href="part/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{end}}
+				</th>
+				<td>{{.Type}}</td>
+				<td>{{.Name}}</td>
+				<td>{{.Material}}</td>
+				<td>{{.CutLength}}</td>
+				<td>{{.Quantity}}</td>
+				<td>
+					<div class="buttons has-addons">
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/edit">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/edit">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-edit"></i>
+							</span>
+						</a>
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/delete">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/delete">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-trash"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+			{{end}}
+		</tbody>
+	</table>
+	{{end}}
+
+	{{if eq $.filterOption "mill"}}
+	{{range $key, $value := .secondaryStatusMap}}
+	<div class="notification is-warning">
+		<h4 class="title is-4">{{$value}}</h4>
+	</div>
+	<table class="table is-fullwidth is-striped">
+		<thead>
+			<tr>
+				<th>Part Number</th>
+				<th>Description</th>
+				<th>Drawing PDF</th>
+				<th>Move</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range $.items}}
+			{{if eq .SecondaryStatus $key}}
+			<tr>
+				<th>
+					{{if eq .Type "Assembly"}}
+					<a href="assembly/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{else}}
+					<a href="part/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{end}}
+				</th>
+				<td>{{.Name}}</td>
+				<td>
+					<a href="/pdf/{{$.project.Prefix}}/{{$.project.Year}}/{{.PartNumber}}">
+						Download
+					</a>
+				</td>
+				<td>
+					<div class="buttons has-addons">
+						<a class="button" {{if eq $key 0}}disabled{{else}}href="/project/{{$.project.Prefix}}/{{$.project.Year}}/part/{{.PartNumber}}/move-status-up"{{end}}>
+							<span class="icon is-small">
+								<i class="fa fa-arrow-up"></i>
+							</span>
+						</a>
+
+						<a class="button" {{if eq $key $.finalSecondaryStatusIndex}}disabled{{else}}href="/project/{{$.project.Prefix}}/{{$.project.Year}}/part/{{.PartNumber}}/move-status-down"{{end}}>
+							<span class="icon is-small">
+								<i class="fa fa-arrow-down"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+				<td>
+					<div class="buttons has-addons">
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/edit">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/edit">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-edit"></i>
+							</span>
+						</a>
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/delete">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/delete">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-trash"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+			{{end}}
+			{{end}}
+		</tbody>
+	</table>
+	{{end}}
+	{{end}}
+
+	{{if eq $.filterOption "design"}}
+	{{range $key, $value := $.statusMap}}
+	{{if and (ge $key $.wantedStatusLower) (le $key $.wantedStatusUpper)}}
+	<div class="notification is-success">
+		<h4 class="title is-4">{{$value}}</h4>
+	</div>
+	<table class="table is-fullwidth is-striped">
+		<thead>
+			<tr>
+				<th>Part Number</th>
+				<th>Description</th>
+				<th>Drawing PDF</th>
+				<th>Move</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range $.items}}
+			{{if eq .Status $key}}
+			<tr>
+				<th>
+					{{if eq .Type "Assembly"}}
+					<a href="assembly/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{else}}
+					<a href="part/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{end}}
+				</th>
+				<td>{{.Name}}</td>
+				<td>
+					<a href="/pdf/{{$.project.Prefix}}/{{$.project.Year}}/{{.PartNumber}}">
+						Download
+					</a>
+				</td>
+				<td>
+					<div class="buttons has-addons">
+						<a class="button" disabled>
+							<span class="icon is-small">
+								<i class="fa fa-arrow-up"></i>
+							</span>
+						</a>
+
+						<a class="button" disabled>
+							<span class="icon is-small">
+								<i class="fa fa-arrow-down"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+				<td>
+					<div class="buttons has-addons">
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/edit">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/edit">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-edit"></i>
+							</span>
+						</a>
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/delete">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/delete">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-trash"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+			{{end}}
+			{{end}}
+		</tbody>
+	</table>
+	{{end}}
+	{{end}}
+	{{end}}
+
+	{{if eq $.filterOption "manufacturing"}}
+	{{range $key, $value := $.statusMap}}
+	{{if and (ge $key $.wantedStatusLower) (le $key $.wantedStatusUpper)}}
+	<div class="notification is-info">
+		<h4 class="title is-4">{{$value}}</h4>
+	</div>
+	<table class="table is-fullwidth is-striped">
+		<thead>
+			<tr>
+				<th>Part Number</th>
+				<th>Description</th>
+				<th>Drawing PDF</th>
+				<th>Move</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range $.items}}
+			{{if eq .Status $key}}
+			<tr>
+				<th>
+					{{if eq .Type "Assembly"}}
+					<a href="assembly/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{else}}
+					<a href="part/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{end}}
+				</th>
+				<td>{{.Name}}</td>
+				<td>
+					<a href="/pdf/{{$.project.Prefix}}/{{$.project.Year}}/{{.PartNumber}}">
+						Download
+					</a>
+				</td>
+				<td>
+					<div class="buttons has-addons">
+						<a class="button" disabled>
+							<span class="icon is-small">
+								<i class="fa fa-arrow-up"></i>
+							</span>
+						</a>
+
+						<a class="button" disabled>
+							<span class="icon is-small">
+								<i class="fa fa-arrow-down"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+				<td>
+					<div class="buttons has-addons">
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/edit">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/edit">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-edit"></i>
+							</span>
+						</a>
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/delete">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/delete">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-trash"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+			{{end}}
+			{{end}}
+		</tbody>
+	</table>
+	{{end}}
+	{{end}}
+	{{end}}
+
+	{{if eq $.filterOption "router_needed"}}
+	<table class="table is-fullwidth is-striped">
+		<thead>
+			<tr>
+				<th>Part Number</th>
+				<th>Description</th>
+				<th>Drawing PDF</th>
+				<th>Download Part</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range $.items}}
+			{{if eq .NeedsRouter true}}
+			{{if and (ge .Status $.wantedStatusLower) (le .Status $.wantedStatusUpper)}}
+			<tr>
+				<th>
+					{{if eq .Type "Assembly"}}
+					<a href="assembly/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{else}}
+					<a href="part/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{end}}
+				</th>
+				<td>{{.Name}}</td>
+				<td>
+					<a href="/pdf/{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}.PDF">
+						Download PDF
+					</a>
+				</td>
+				<td>
+					<a href="/pdf/{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}.sldprt">
+						Download Part
+					</a>
+				</td>
+				<td>
+					<div class="buttons has-addons">
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/edit">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/edit">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-edit"></i>
+							</span>
+						</a>
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/delete">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/delete">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-trash"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+			{{end}}
+			{{end}}
+			{{end}}
+		</tbody>
+	</table>
+	{{end}}
+
+	{{if and (ne $.filterOption "cut") (ne $.filterOption "mill") (ne $.filterOption "design") (ne $.filterOption "manufacturing") (ne $.filterOption "router_needed")}}
+	<table class="table is-fullwidth is-striped">
+		<thead>
+			<tr>
+				<th>Part Number</th>
+				<th>Type</th>
+				<th>Description</th>
+				<th>Parent</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .items}}
+			<tr>
+				<th>
+					{{if eq .Type "Assembly"}}
+					<a href="assembly/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{else}}
+					<a href="part/{{.PartNumber}}">
+						{{$.project.Prefix}}-{{$.project.Year}}-{{.PartNumber}}
+					</a>
+					{{end}}
+				</th>
+				<td>{{.Type}}</td>
+				<td>{{.Name}}</td>
+				<td>
+					<a href="assembly/{{.Parent}}"> {{.Parent}} </a>
+				</td>
+				<td>{{index $.statusMap .Status}}</td>
+				<td>
+					<div class="buttons has-addons">
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/edit">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/edit">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-edit"></i>
+							</span>
+						</a>
+						{{if eq .Type "Assembly"}}
+						<a class="button" href="assembly/{{.PartNumber}}/delete">
+						{{else}}
+						<a class="button" href="part/{{.PartNumber}}/delete">
+						{{end}}
+							<span class="icon is-small">
+								<i class="fa fa-trash"></i>
+							</span>
+						</a>
+					</div>
+				</td>
+			</tr>
+			{{end}}
+		</tbody>
+	</table>
+	{{end}}
+</div>
+
+{{ template "footer" . }}
